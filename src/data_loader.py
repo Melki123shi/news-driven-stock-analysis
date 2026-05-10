@@ -17,15 +17,29 @@ def load_data(
         DataFrame with specified columns converted to float type
     """
     df = pd.read_csv(filepath)
-    
-    if numeric_columns:
-        for col in numeric_columns:
-            if col in df.columns:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
-    
+
+    # Convert Date column to datetime
+    df['Date'] = pd.to_datetime(df['Date'])
+
+    # Set as index
+    df.set_index('Date', inplace=True)
+
+    # Remove timezone (only if it exists)
+    if df.index.tz is not None:
+        df.index = df.index.tz_localize(None)
+
+    # Convert numeric columns
+    df = df.astype({
+        'Open': 'float64',
+        'High': 'float64',
+        'Low': 'float64',
+        'Close': 'float64',
+        'Volume': 'float64'
+    })
+
     return df
 
-def handle_missing_values(df: pd.DataFrame, method: str = 'ffill') -> pd.DataFrame:
+def handle_missing_values(df: pd.DataFrame) -> pd.DataFrame:
     """
     Check for and handle missing values in the DataFrame.
     
@@ -37,20 +51,8 @@ def handle_missing_values(df: pd.DataFrame, method: str = 'ffill') -> pd.DataFra
     Returns:
         DataFrame with missing values handled.
     """
-    if method == 'ffill':
-        df.fillna(method='ffill', inplace=True)
-    elif method == 'bfill':
-        df.fillna(method='bfill', inplace=True)
-    return df
-
-def remove_nulls(df):
-    """Remove rows that have any missing values. Print a summary of what was removed."""
-    before = len(df)
-    df = df.dropna()
-    after = len(df)
-    removed = before - after
-    if removed > 0:
-        print(f"Removed {removed} row(s) with missing values. {after} rows remaining.")
-    else:
-        print(f"No missing values found. All {after} rows kept.")
+    print("Checking for missing values...")
+    print(f"Found {df.isnull().sum().sum()} missing values. Filling with ffill.")
+    if df.isnull().values.any():
+        df.ffill(inplace=True)
     return df

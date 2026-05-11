@@ -45,36 +45,29 @@ This project aims to:
 - Develop insights for investment strategy recommendations
 
 ---
-
-# Project Structure
-
-```bash
-news-sentiment-analysis/
+### Project Structure
+```
+news-driven-stock-analysis/
 ├── .github/
 │   └── workflows/
 │       └── unittests.yml
-├── .vscode/
-│   └── settings.json
-├── data/
-│   └── raw/
 ├── notebooks/
-│   ├── task_1_eda.ipynb
-│   ├── task_2_quantitative_analysis.ipynb
-│   └── task_3_sentiment_correlation.ipynb
+│   ├── __init__.py
+│   ├── aapl_quantitative_analysis.ipynb
+│   ├── amzn_quantitative_analysis.ipynb
+│   ├── eda.ipynb
+│   ├── google_quantitative_analysis.ipynb
+│   ├── meta_quantitative_analysis.ipynb
+│   └── nvda_quantitative_analysis.ipynb
 ├── src/
-│   ├── data_loader.py
-│   ├── sentiment.py
-│   ├── technical_indicators.py
-│   ├── correlation.py
-│   └── utils.py
-├── tests/
-│   └── test_sample.py
-├── scripts/
-├── requirements.txt
+│   ├── __init__.py
+│   ├── analysis.py
+│   └── data_loader.py
+├── .gitignore
+├── LICENSE
 ├── README.md
-└── .gitignore
+└── requirements.txt
 ```
-
 ---
 
 # Dataset Description
@@ -198,9 +191,8 @@ jupyter notebook
 
 Open the notebooks directory and run:
 
-- `task_1_eda.ipynb`
-- `task_2_quantitative_analysis.ipynb`
-- `task_3_sentiment_correlation.ipynb`
+- `eda.ipynb`
+- all `quantitative_analysis.ipynb` for all companies
 
 ---
 
@@ -338,11 +330,6 @@ The project includes:
 ---
 
 # References
-
-## Financial Analysis
-
-- Investopedia
-- Yahoo Finance
 
 ## NLP
 

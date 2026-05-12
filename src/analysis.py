@@ -39,3 +39,37 @@ def add_and_plot_moving_averages(df, windows, plot_rows=200):
     plt.show()
 
     return df
+
+def normalize_timestamps(news_df, stock_df, sticker, news_date_col='date', stock_date_col='Date'):
+    """
+    Normalize timestamps across news and stock datasets to match news items
+    to corresponding stock trading days.
+    """
+
+    # Convert all timestamps to UTC first
+    news_df[news_date_col] = pd.to_datetime(
+        news_df[news_date_col],
+        errors='coerce',
+        utc=True
+    )
+
+    stock_df[stock_date_col] = pd.to_datetime(
+        stock_df[stock_date_col],
+        errors='coerce',
+        utc=True
+    )
+    # Remove timezone info to make both tz-naive
+    news_df[news_date_col] = news_df[news_date_col].dt.tz_localize(None)
+    stock_df[stock_date_col] = stock_df[stock_date_col].dt.tz_localize(None)
+
+    print(f"News timestamps after timezone normalization:\n{news_df[news_date_col].head()}\n")
+    print(f"{sticker} Stock timestamps after timezone normalization:\n{stock_df[stock_date_col].head()}")
+
+    # Step 5: Assign trading date from news timestamp
+    news_df['trading_date'] = (
+        news_df[news_date_col]
+        .dt.date
+    )
+
+    return news_df
+

@@ -90,3 +90,22 @@ def normalize_timestamps(news_df, stock_df, sticker, news_date_col='date', stock
     )
 
     return news_df
+
+
+def plot_news_by_day(normalized_news, title_suffix):
+    """Plot news articles distribution by day of week."""
+    normalized_news['trading_date'] = pd.to_datetime(normalized_news['trading_date'])
+    news_by_day = normalized_news['trading_date'].dt.day_name().value_counts()
+    
+    # Reorder by day of week (Monday to Sunday)
+    day_order = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+    news_by_day = news_by_day.reindex(day_order)
+    
+    plt.figure(figsize=(10, 5))
+    news_by_day.plot(kind='bar', color='steelblue')
+    plt.xlabel('Day of Week')
+    plt.ylabel('Number of News Articles')
+    plt.title(f'News Articles Distribution by Day of Week ({title_suffix})')
+    plt.xticks(rotation=45, ha='right')
+    plt.tight_layout()
+    plt.show()

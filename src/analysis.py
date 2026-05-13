@@ -66,10 +66,27 @@ def normalize_timestamps(news_df, stock_df, sticker, news_date_col='date', stock
     print(f"{sticker} Stock timestamps after timezone normalization:\n{stock_df[stock_date_col].head()}")
 
     # Step 5: Assign trading date from news timestamp
+    # Create sorted list of available trading dates from stock data
+    trading_dates = pd.to_datetime(stock_df[stock_date_col]).dt.date.dropna().unique()
+    trading_dates = sorted(trading_dates)
+
+    # Helper to find next trading date >= given date
+    def next_trading_date(d):
+        # if already a trading date return it
+        if d in trading_dates:
+            return d
+        # find first trading date after d
+        for td in trading_dates:
+            if td >= d:
+                return td
+        # if no future trading date found, return last available trading date
+        return trading_dates[-1] if trading_dates else d
+
+    # Assign trading_date: map weekends/holidays to next available trading day
     news_df['trading_date'] = (
         news_df[news_date_col]
         .dt.date
+        .apply(lambda d: next_trading_date(d) if pd.notnull(d) else d)
     )
 
     return news_df
-
